@@ -1,0 +1,39 @@
+{#{% extends 'base.html' %}#}
+{#{% block content %}#}
+{#<h2>Login</h2>#}
+{#<form method="post">#}
+{#  {% csrf_token %}#}
+{#  {{ form.as_p }}#}
+{#  <button class="btn btn-success" type="submit">Login</button>#}
+{#</form>#}
+{#{% endblock %}#}
+
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100" style="background: linear-gradient(135deg, #89f7fe, #66a6ff);">
+  <div class="card shadow-lg border-0 animate__animated animate__zoomIn" style="min-width: 420px; border-radius: 20px;">
+    <div class="card-body p-5">
+      <h2 class="text-center text-primary mb-4 fw-bold">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Login to Your Account
+      </h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm mt-3">
+            <i class="bi bi-box-arrow-in-right me-1"></i> Login
+          </button>
+        </div>
+      </form>
+      <p class="text-center mt-4 mb-0 text-muted">
+        Don’t have an account?
+        <a href="{% url 'register' %}" class="text-decoration-none text-dark fw-semibold">Register now</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

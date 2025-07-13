@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="mb-4 text-primary animate__animated animate__fadeInDown">📝 Task List</h2>
+
+<!-- 🔍 Search and Sorting Form -->
+<form method="get" class="row mb-4 g-2">
+  <div class="col-md-4">
+    <input type="text" name="q" class="form-control" placeholder="🔍 Search by title" value="{{ search_query }}">
+  </div>
+  <div class="col-md-3">
+    <select name="sort" onchange="this.form.submit()" class="form-select">
+      <option value="due_date" {% if sort_by == "due_date" %}selected{% endif %}>📅 Sort by Due Date</option>
+      <option value="priority" {% if sort_by == "priority" %}selected{% endif %}>⚡ Sort by Priority</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-funnel"></i> Apply</button>
+  </div>
+  <div class="col-md-3 text-end">
+    <a href="{% url 'task_create' %}" class="btn btn-success w-100"><i class="bi bi-plus-circle"></i> Add Task</a>
+  </div>
+</form>
+
+<!-- 📋 Task Table -->
+<table class="table table-hover table-bordered table-striped animate__animated animate__fadeIn">
+  <thead class="table-dark">
+    <tr>
+      <th>Title</th>
+      <th>Due Date</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for task in tasks %}
+      <tr class="{% if task.is_overdue %}table-danger{% elif task.completed %}table-success{% endif %}">
+        <td>{{ task.title }}</td>
+        <td>{{ task.due_date }}</td>
+        <td>
+          <span class="badge bg-{% if task.priority == 'High' %}danger{% elif task.priority == 'Medium' %}warning{% else %}info{% endif %}">
+            {{ task.priority }}
+          </span>
+        </td>
+        <td>
+          {% if task.completed %}
+            <span class="badge bg-success">✅ Completed</span>
+          {% elif task.is_overdue %}
+            <span class="badge bg-danger">❗ Overdue</span>
+          {% else %}
+            <span class="badge bg-secondary">⏳ Pending</span>
+          {% endif %}
+        </td>
+        <td>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'task_edit' task.id %}" class="btn btn-sm btn-warning">✏️ Edit</a>
+            {% if not task.completed %}
+              <a href="{% url 'task_complete' task.pk %}" class="btn btn-sm btn-success">✅ Complete</a>
+              <a href="{% url 'task_snooze' task.pk %}?minutes=60" class="btn btn-sm btn-secondary">😴 Snooze 1hr</a>
+              <a href="{% url 'task_snooze' task.pk %}?minutes=1440" class="btn btn-sm btn-secondary">⏰ Snooze 1 Day</a>
+
+            {% endif %}
+            <form method="post" action="{% url 'task_delete' task.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this task?')">🗑️ Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-muted">No tasks available.</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

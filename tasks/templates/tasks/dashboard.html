@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>📊 Task Dashboard</h2>
+<ul class="list-group">
+  <li class="list-group-item">Total Tasks: {{ total_tasks }}</li>
+  <li class="list-group-item text-warning">Pending: {{ pending }}</li>
+  <li class="list-group-item text-success">Completed: {{ completed }}</li>
+  <li class="list-group-item text-danger">Overdue: {{ overdue }}</li>
+</ul>
+{% endblock %}
